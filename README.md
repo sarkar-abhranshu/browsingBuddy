@@ -1,142 +1,81 @@
-# BrowsingAssistant MCP server
+# Browsing Assistant
 
-MCP-powered assistant for day-to-day browsing tasks
+This repository contains two integrated components:
 
-## Features
-- Summarize web pages
-- Extract information from web content
-- Automate simple browsing actions
-- Modular and extensible for future features
-
-## Project Structure
-- MCP server powered by Python and the Model Context Protocol
-- Virtual environment managed in `.venv`
-- Main entry: `browsingassistant` module
-
-## Setup
-1. Ensure Python 3.11+ is installed
-2. Install dependencies:
-   ```powershell
-   uv sync --dev --all-extras
-   ```
-3. To run the server:
-   ```powershell
-   .venv\Scripts\python.exe -m browsingassistant
-   ```
-
-## VS Code Integration
-- The `.vscode/mcp.json` file is preconfigured for debugging and running the MCP server in VS Code.
-
-## SDK and Documentation
-- SDK: https://github.com/modelcontextprotocol/create-python-server
-- More info: https://modelcontextprotocol.io/llms-full.txt
+1. **Python MCP Server** (`src/browsingassistant`): Implements a Model Context Protocol server that summarizes and extracts information from web content using Gemini.
+2. **Browser Extension** (`firefox-extension`): A Firefox popup extension that captures page text, sends it to the local MCP server, and displays formatted responses (including structured `/notes` output) using Markdown.
 
 ---
 
-## Components
+## Features
 
-### Resources
+- **Summarize any webpage** with a single click
+- **Structured `/notes` command**: Generate student-friendly notes in Markdown with headings, emojis, bullet points, and LaTeX support
+- **YouTube transcript support**: Detects YouTube URLs and summarizes transcripts or descriptions
+- **CORS-ready API**: FastAPI backend with CORS middleware for seamless extension requests
 
-The server implements a simple note storage system with:
-- Custom note:// URI scheme for accessing individual notes
-- Each note resource has a name, description and text/plain mimetype
+---
 
-### Prompts
+## Project Structure
 
-The server provides a single prompt:
-- summarize-notes: Creates summaries of all stored notes
-  - Optional "style" argument to control detail level (brief/detailed)
-  - Generates prompt combining all current notes with style preference
+```
+.
+├── firefox-extension/
+│   ├── manifest.json      Browser extension manifest (manifest v2)
+│   ├── popup.html         Extension UI (includes marked.js for Markdown)
+│   ├── popup.js           JS logic to query page, send `/assist` requests, and render Markdown
+│   └── icon.png           Extension icon
+├── src/browsingassistant/
+│   ├── api.py             FastAPI app exposing `/assist` endpoint
+│   ├── gemini.py          Gemini integration and prompt builder (handles `/notes` format)
+│   ├── server.py          MCP stdio server entry point (for MCP clients)
+│   └── state.py           In-memory note storage for MCP resources and prompts
+├── requirements.txt       Python dependencies (FastAPI, httpx, mcp)
+├── pyproject.toml         Project metadata and dependencies
+├── uv.lock                Lockfile for `uv` environment tool
+└── README.md              This file
+```
 
-### Tools
-
-The server implements one tool:
-- add-note: Adds a new note to the server
-  - Takes "name" and "content" as required string arguments
-  - Updates server state and notifies clients of resource changes
-
-## Configuration
-
-[TODO: Add configuration details specific to your implementation]
+---
 
 ## Quickstart
 
-### Install
+### 1. Setup Python environment
 
-#### Claude Desktop
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-On MacOS: `~/Library/Application\ Support/Claude/claude_desktop_config.json`
-On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+### 2. Run the MCP server
 
-<details>
-  <summary>Development/Unpublished Servers Configuration</summary>
-  ```
-  "mcpServers": {
-    "BrowsingAssistant": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "C:\Users\abhra\OneDrive\Desktop\Code\mcpBrowsingAssistant",
-        "run",
-        "BrowsingAssistant"
-      ]
-    }
-  }
-  ```
-</details>
+Use the VS Code task or run directly:
 
-<details>
-  <summary>Published Servers Configuration</summary>
-  ```
-  "mcpServers": {
-    "BrowsingAssistant": {
-      "command": "uvx",
-      "args": [
-        "BrowsingAssistant"
-      ]
-    }
-  }
-  ```
-</details>
+```powershell
+# VS Code task: "Run BrowsingAssistant MCP Server"
+.venv\Scripts\python.exe -m browsingassistant
+
+# Or with uvicorn:
+uvicorn src.browsingassistant.api:app --reload --host 0.0.0.0 --port 8000
+```
+
+### 3. Load the Firefox extension
+
+1. Open `about:debugging#/runtime/this-firefox` in Firefox.
+2. Click **"Load Temporary Add-on"** and select `firefox-extension/manifest.json`.
+3. The **Browsing Assistant** icon should appear in your toolbar.
+
+### 4. Use the Extension
+
+- Click the extension icon on any webpage.
+- Type a question (e.g., `Summarize this page`).
+- For structured notes, start with `/notes` and hit **Enter**.
+- Responses render in Markdown with headings, emojis, and more.
+
+---
 
 ## Development
 
-### Building and Publishing
-
-To prepare the package for distribution:
-
-1. Sync dependencies and update lockfile:
-```bash
-uv sync
-```
-
-2. Build package distributions:
-```bash
-uv build
-```
-
-This will create source and wheel distributions in the `dist/` directory.
-
-3. Publish to PyPI:
-```bash
-uv publish
-```
-
-Note: You'll need to set PyPI credentials via environment variables or command flags:
-- Token: `--token` or `UV_PUBLISH_TOKEN`
-- Or username/password: `--username`/`UV_PUBLISH_USERNAME` and `--password`/`UV_PUBLISH_PASSWORD`
-
-### Debugging
-
-Since MCP servers run over stdio, debugging can be challenging. For the best debugging
-experience, we strongly recommend using the [MCP Inspector](https://github.com/modelcontextprotocol/inspector).
-
-
-You can launch the MCP Inspector via [`npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) with this command:
-
-```bash
-npx @modelcontextprotocol/inspector uv --directory C:\Users\abhra\OneDrive\Desktop\Code\mcpBrowsingAssistant run browsingassistant
-```
-
-
-Upon launching, the Inspector will display a URL that you can access in your browser to begin debugging.
+- **Code formatting**: Use `black` for Python, any preferred linter for JS/HTML.
+- **Testing**: Extend the MCP server with additional prompts and tools in `server.py`.
