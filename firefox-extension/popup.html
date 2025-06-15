@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Browsing Assistant</title>
+  <style>body{font-family:sans-serif;margin:1em;}textarea,input{width:100%;margin-top:0.5em;}button{margin-top:1em;}</style>
+</head>
+<body>
+  <h2>Browsing Assistant</h2>
+  <label for="question">Ask something about this page:</label>
+  <input id="question" type="text" placeholder="e.g. Summarize this page" />
+  <button id="send">Ask Assistant</button>
+  <pre id="result" style="margin-top:1em;white-space:pre-wrap;"></pre>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

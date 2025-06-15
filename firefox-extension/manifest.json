@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "Browsing Assistant MCP Client",
+  "version": "0.1.0",
+  "description": "Send page content to your local MCP server and display its response.",
+  "permissions": ["activeTab", "storage", "http://localhost:8000/*"],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "icon.png"
+    }
+  },
+  "icons": {
+    "48": "icon.png"
+  },
+  "content_security_policy": "script-src 'self' https://cdn.jsdelivr.net; object-src 'self';"
+}

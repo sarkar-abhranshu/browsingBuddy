@@ -1,0 +1,13 @@
+{
+  "servers": {
+    "browsing-buddy": {
+      "type": "stdio",
+      "command": ".venv\\Scripts\\python.exe",
+      "args": ["-m", "browsingassistant"],
+      "http": {
+        "command": ".venv\\Scripts\\python.exe",
+        "args": ["-m", "uvicorn", "browsingassistant.api:app", "--host", "0.0.0.0", "--port", "8000"]
+      }
+    }
+  }
+}

@@ -1,0 +1,2 @@
+# Add python-dotenv to requirements for .env support
+python-dotenv

@@ -1,0 +1,17 @@
+[project]
+name = "browsingassistant"
+version = "0.1.0"
+description = "MCP-powered assistant for day-to-day browsing tasks"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [ "mcp>=1.9.4",]
+[[project.authors]]
+name = "sarkar-abhranshu"
+email = "abhranshusarkar@outlook.com"
+
+[build-system]
+requires = [ "hatchling",]
+build-backend = "hatchling.build"
+
+[project.scripts]
+browsingassistant = "browsingassistant:main"
