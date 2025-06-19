@@ -74,8 +74,3 @@ uvicorn src.browsingassistant.api:app --reload --host 0.0.0.0 --port 8000
 - Responses render in Markdown with headings, emojis, and more.
 
 ---
-
-## Development
-
-- **Code formatting**: Use `black` for Python, any preferred linter for JS/HTML.
-- **Testing**: Extend the MCP server with additional prompts and tools in `server.py`.

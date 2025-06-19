@@ -1,4 +1,7 @@
-// popup.js
+// popup.js: Handles UI interactions in the browser extension popup.
+// - Queries active tab text
+// - Sends data to MCP server at /assist
+// - Renders Markdown responses via marked.js
 
 document.getElementById('send').addEventListener('click', async () => {
   const question = document.getElementById('question').value.trim();

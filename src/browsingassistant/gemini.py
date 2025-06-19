@@ -1,4 +1,3 @@
-# Gemini API integration for summarization
 import os
 import httpx
 import dotenv
@@ -14,30 +13,26 @@ def is_youtube_url(url: str) -> bool:
     return "youtube.com/watch" in url or "youtu.be/" in url
 
 def build_gemini_prompt(text: str, url: str, question: str) -> str:
-    if question.startswith("/notes"):
-        return f"""Generate structured, student-friendly notes from the content below. Use this format:
-
-## 📌 Short heading or topic name
-
-✅ Summary in simple language.
-
-🧠 Formulas, code snippets, or diagrams (if mentioned)
-
-📊 Examples or real-life applications
-
-⚠️ Tips or common mistakes
-
-Use Markdown formatting, emojis, bullet points, and LaTeX for math if needed.
-
-Text:
-{text}
-"""
-    elif is_youtube_url(url):
+    if is_youtube_url(url):
         return f"Summarize the following YouTube video transcript or description.\n\n{question}\n\n{text}"
     else:
         return f"Summarize the following news article or web page.\n\n{question}\n\n{text}"
 
 async def gemini_summarize(text: str, url: str, question: str) -> str:
+    """
+    Asynchronously sends a summarization or question‐answering request to the Gemini API
+    using the provided text, URL, and question, then returns the API’s response.
+
+    Args:
+        text (str): The body of text to include in the prompt for summarization or QA.
+        url (str): The source URL to reference in the prompt.
+        question (str): The specific question to ask the Gemini model about the text.
+
+    Returns:
+        str: The model’s summary or answer. If GEMINI_API_KEY is not set, returns
+        an informational message. On request failure or other exceptions, returns
+        a string beginning with "Gemini API error:" followed by the exception message.
+    """
     if not GEMINI_API_KEY:
         return "Gemini API key not set. Set GEMINI_API_KEY environment variable."
     prompt = build_gemini_prompt(text, url, question)

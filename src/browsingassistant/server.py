@@ -1,3 +1,5 @@
+"""MCP stdio server exposing note resources, prompts, and the add-note tool."""
+
 import asyncio
 
 from mcp.server.models import InitializationOptions
@@ -12,6 +14,7 @@ server = Server("BrowsingAssistant")
 
 @server.list_resources()
 async def handle_list_resources() -> list[types.Resource]:
+    """Return available note resources based on in-memory state."""
     """
     List available note resources.
     Each note is exposed as a resource with a custom note:// URI scheme.
@@ -28,6 +31,7 @@ async def handle_list_resources() -> list[types.Resource]:
 
 @server.read_resource()
 async def handle_read_resource(uri: AnyUrl) -> str:
+    """Retrieve the content of a specific note resource identified by its URI."""
     """
     Read a specific note's content by its URI.
     The note name is extracted from the URI host component.
@@ -43,6 +47,7 @@ async def handle_read_resource(uri: AnyUrl) -> str:
 
 @server.list_prompts()
 async def handle_list_prompts() -> list[types.Prompt]:
+    """List prompts supported by the server (e.g., summarize-notes)."""
     """
     List available prompts.
     Each prompt can have optional arguments to customize its behavior.
@@ -65,6 +70,7 @@ async def handle_list_prompts() -> list[types.Prompt]:
 async def handle_get_prompt(
     name: str, arguments: dict[str, str] | None
 ) -> types.GetPromptResult:
+    """Generate a prompt to summarize existing notes, with optional detail level."""
     """
     Generate a prompt by combining arguments with server state.
     The prompt includes all current notes and can be customized via arguments.
@@ -94,6 +100,7 @@ async def handle_get_prompt(
 
 @server.list_tools()
 async def handle_list_tools() -> list[types.Tool]:
+    """List available server tools (e.g., add-note) with their input schemas."""
     """
     List available tools.
     Each tool specifies its arguments using JSON Schema validation.
@@ -117,6 +124,7 @@ async def handle_list_tools() -> list[types.Tool]:
 async def handle_call_tool(
     name: str, arguments: dict | None
 ) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
+    """Execute a tool by name, such as adding a new note, updating server state."""
     """
     Handle tool execution requests.
     Tools can modify server state and notify clients of changes.

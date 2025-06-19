@@ -1,3 +1,9 @@
+"""FastAPI backend exposing /assist endpoint for the browser extension.
+
+Receives JSON payload ({text, url, question}), stores a snippet in state,
+delegates to Gemini summarization, and returns a JSON response.
+"""
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,6 +25,7 @@ app.add_middleware(
 
 @app.post("/assist")
 async def assist(request: Request):
+    """Handle the /assist endpoint: parse JSON payload, store a snippet in state, call Gemini summarization, and return the result."""
     data = await request.json()
     text = data.get("text", "")
     url = data.get("url", "")
@@ -34,4 +41,5 @@ async def assist(request: Request):
     return JSONResponse({"result": summary})
 
 if __name__ == "__main__":
+    """Run the FastAPI app with Uvicorn server on localhost:8000."""
     uvicorn.run(app, host="0.0.0.0", port=8000)
