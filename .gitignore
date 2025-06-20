@@ -14,3 +14,6 @@ wheels/
 
 # GitHub config
 .github/
+
+# Ignore snapback backups
+.snapback/
